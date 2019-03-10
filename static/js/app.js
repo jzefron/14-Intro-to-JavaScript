@@ -1,43 +1,79 @@
 // from data.js
 var tableData = data;
 var tbody = d3.select("tbody");
-// YOUR CODE HERE!
+
 function fillTable(data) {
+    //loop over data
     data.forEach((aliens) => {
-    var row = tbody.append("tr");
-    Object.entries(aliens).forEach(([key, value]) => {
-      var cell = tbody.append("td");
-      cell.text(value);
+      // add a new row for each data
+      var row = tbody.append("tr");
+      //loop over each data entry and add it to the table
+      Object.entries(aliens).forEach(([key, value]) => {
+        var cell = row.append("td");
+        cell.text(value);
       
+      });
     });
-  });
   console.log('done')
 };
-fillTable(data);
-var text = d3.select("#datetime");
+fillTable(data);  
+// column name array
+filters = [
+"datetime",
+ "city",
+ "state",
+ "country",
+ "shape"];
+ // level 1 filter
+ var text = d3.select("#datetime");
+
+
   // Function to handle input change
 function handleChange(event) {
-    // grab the valu   e of the input field
+    // stop the submit default
     d3.event.preventDefault();
-    let filtDate = text.property('value')
+    console.log('doing stuff')
+ 
     console.log(filtDate)
-    
-    //console.log(this.property('value'))
-    //var inputText = d3.event.target.value;
-   // console.log(inputText);
-    // remove the previous info
+    var filterBool =  true
+    //removing ful table
     tbody.selectAll('*').remove();
-    var filtData= data.filter(e => e.datetime === filtDate)
+   /*
+    filters.forEach( x => {
+      filt = d3.select('#'+x);
+      filtText = filt.property('value')
+      console.log(filt)
+      console.log(filtText)
+      if (filtText !== '') {
+      //  filterBool = filerBool && 
+      }
+    })
+  */
+    //filter table for the date
+    var filterInputText
+    var filtData= data.filter(iData => {
+      //initialize filter 
+      filtBool = true
+      //loop over the filers
+      filters.forEach( f=>{
+        // get the individual field text
+      //  console.log(f)
+      
+        filterInputText =  d3.select('#'+f).property('value')
+       // console.log(filterInputText)
+
+        // check if the column matches the filer text or if the input text is empty
+        filtBool = filtBool &&( (iData[f] ===filterInputText) || (filterInputText === ''))
+        
+      }
+      )
+    // return individual datas if filtered
+    return filtBool;
+    })
+    
     fillTable(filtData);
 };
-var but = d3.select('.date-filt');
+//filter button 
+var but = d3.select('.filt');
 console.log(but.property);
 but.on('click',handleChange);
-/*butt => {
-    d3.event.preventDefault();
-   // Plotly.d3.select("#submit").on("click", d3.event.preventDefault());//.preventDefault();//d3.select("#submit").on("click", handleSubmit);
-         console.log('pressed');
-         handle
-        }
-);*/
-//text.on("change", console.log('stuff'));//handleChange);
